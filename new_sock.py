@@ -19,7 +19,7 @@ async def handler(websocket):
 # Main function to start the WebSocket server
 async def main():
     # Start the WebSocket server
-    async with websockets.serve(handler, "192.168.29.241", 8000):
+    async with websockets.serve(handler, "localhost", 8000):
         print("WebSocket server started on ws://localhost:8000")
         await asyncio.Future()  # Run forever
 
