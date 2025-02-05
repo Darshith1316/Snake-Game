@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controller</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #2e004f; /* Dark purple background */
+            font-family: Arial, sans-serif;
+        }
+
+        .controller {
+            display: grid;
+            grid-template-columns: 100px 100px 100px;
+            grid-template-rows: 100px 100px 100px;
+            gap: 20px;
+        }
+
+        .button {
+            width: 100px;
+            height: 100px;
+            background-color: #0ff; /* Neon blue */
+            border: 2px solid #00ffff; /* Border with neon blue */
+            border-radius: 12px;
+            box-shadow: 0 0 15px #0ff, 0 0 30px #0ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: "Press Start 2P";
+            color: #000;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s;
+        }
+
+        .button:active {
+            transform: scale(0.9);
+        }
+
+        .empty {
+            visibility: hidden;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="controller">
+        <div class="empty"></div>
+        <div class="button" id="w">UP</div>
+        <div class="empty"></div>
+        <div class="button" id="a">LEFT</div>
+        <div class="empty"></div>
+        <div class="button" id="d">RIGHT</div>
+        <div class="empty"></div>
+        <div class="button" id="s">DOWN</div>
+        <div class="empty"></div>
+    </div>
+
+    <script>
+        const messagesDiv = document.getElementById("controller");
+        const messageInput = document.getElementById("button");
+
+        // Connect to the WebSocket server
+        const socket = new WebSocket("ws://192.168.31.87:8000");
+
+        // Handle connection errors
+        socket.onerror = function(error) {
+            const message = document.createElement("div");
+            message.textContent = "Error: " + error.message;
+            messagesDiv.appendChild(message);
+        };
+
+        // Notify on connection close
+        socket.onclose = function() {
+            const message = document.createElement("div");
+            message.textContent = "Connection closed";
+            messagesDiv.appendChild(message);
+        };
+
+        // Send a message to the server
+        function sendMessage(n) {
+            const text = n;
+            if (text) {
+                socket.send(text);
+            }
+        }
+
+        // Add event listeners for button clicks
+        document.querySelectorAll('.button').forEach(button => {
+            button.addEventListener('click', () => {
+                sendMessage(button.id);
+            });
+        });
+    </script>
+</body>
+</html>
